@@ -2,6 +2,8 @@ package com.pluralsight.dealership.dao;
 
 import com.pluralsight.dealership.model.Dealership;
 import com.pluralsight.dealership.model.Vehicle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -11,11 +13,33 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DealershipDaoMySqlImpl implements DealershipDao {
-    private DataSource dataSource;
+@Component
+public class JdbcDealershipDao implements DealershipDao {
+    private final DataSource dataSource;
 
-    public DealershipDaoMySqlImpl(DataSource dataSource) {
+    @Autowired
+    public JdbcDealershipDao(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    @Override
+    public void addDealership(Dealership dealership) {
+        String query = """
+                INSERT INTO dealerships
+                VALUES (?,?,?,?)
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, dealership.getId());
+            preparedStatement.setString(2, dealership.getName());
+            preparedStatement.setString(3, dealership.getAddress());
+            preparedStatement.setString(4, dealership.getPhone());
+
+            ResultSet rs = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
