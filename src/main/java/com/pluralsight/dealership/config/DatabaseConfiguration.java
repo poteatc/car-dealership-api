@@ -1,4 +1,4 @@
-package com.pluralsight.dealership;
+package com.pluralsight.dealership.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
