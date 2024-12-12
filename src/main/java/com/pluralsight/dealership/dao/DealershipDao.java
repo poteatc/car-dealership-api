@@ -4,6 +4,7 @@ import com.pluralsight.dealership.model.Dealership;
 import com.pluralsight.dealership.model.Vehicle;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DealershipDao {
     // Create
@@ -11,14 +12,12 @@ public interface DealershipDao {
     // Read
     Dealership findDealershipById(int id);
     List<Dealership> getAllDealerships();
-    // TODO : put this method in the VehicleDao instead
-    List<Vehicle> findAllVehiclesByDealership(int id);
+    //Map<Integer, List<Vehicle>> getDealershipInventoryById(int id);
+    Map<Dealership, List<Vehicle>> getDealershipInventoryById(int id);
 
     void updateDealership(int id, Dealership dealership);
 
     void deleteDealership(int id);
-
-    // Update
-    //void updateDealership()
+    boolean dealershipExists(int id);
 
 }

@@ -11,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class JdbcDealershipDao implements DealershipDao {
@@ -55,29 +57,29 @@ public class JdbcDealershipDao implements DealershipDao {
         //return getDealershipByName(dealership.getName());
     }
 
-    public Dealership getDealershipByName(String dealershipName) {
-        String query = """
-                SELECT * FROM dealerships
-                WHERE name = ?
-                """;
-
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, dealershipName);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                int dealership_id = rs.getInt("dealership_id");
-                String name = rs.getString("name");
-                String address = rs.getString("address");
-                String phone = rs.getString("phone");
-
-                return new Dealership(dealership_id, name, address, phone);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
-    }
+//    public Dealership getDealershipByName(String dealershipName) {
+//        String query = """
+//                SELECT * FROM dealerships
+//                WHERE name = ?
+//                """;
+//
+//        try (Connection connection = dataSource.getConnection()) {
+//            PreparedStatement preparedStatement = connection.prepareStatement(query);
+//            preparedStatement.setString(1, dealershipName);
+//            ResultSet rs = preparedStatement.executeQuery();
+//            while (rs.next()) {
+//                int dealership_id = rs.getInt("dealership_id");
+//                String name = rs.getString("name");
+//                String address = rs.getString("address");
+//                String phone = rs.getString("phone");
+//
+//                return new Dealership(dealership_id, name, address, phone);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return null;
+//    }
 
     @Override
     public Dealership findDealershipById(int id) {
@@ -132,14 +134,22 @@ public class JdbcDealershipDao implements DealershipDao {
     }
 
     @Override
-    public List<Vehicle> findAllVehiclesByDealership(int id) {
+    public Map<Dealership, List<Vehicle>> getDealershipInventoryById(int id) {
+        Map<Dealership, List<Vehicle>> dealershipInventory = new HashMap<>();
+        Dealership dealership;
+        int dealershipId = 0;
+        String name = "";
+        String address = "";
+        String phone = "";
         List<Vehicle> vehicles = new ArrayList<>();
-
+        //  -- Select all vehicles in a dealership by
+        //  joining dealerships.inventory.VIN = vehicles.VIN
         String query = """
-                SELECT dealership_id, inventory.VIN, vehicles.year year, vehicles.make make, vehicles.model model 
+                SELECT dealerships.*, vehicles.*
                 FROM inventory
+                JOIN dealerships ON dealerships.dealership_id = inventory.dealership_id
                 JOIN vehicles ON inventory.VIN = vehicles.VIN
-                WHERE dealership_id = ?;
+                WHERE dealerships.dealership_id = ?;
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
@@ -147,24 +157,70 @@ public class JdbcDealershipDao implements DealershipDao {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
+                dealershipId = rs.getInt("dealership_id");
+                name = rs.getString("name");
+                address = rs.getString("address");
+                phone = rs.getString("phone");
                 String vin = rs.getString("VIN");
                 int year = rs.getInt("year");
                 String make = rs.getString("make");
                 String model = rs.getString("model");
-                String vehicleType = "";
-                String color = "";
-                int odometer = 0;
-                double price = 0.0;
-                boolean sold = false;
+                String type = rs.getString("type");
+                String color = rs.getString("color");
+                int mileage = rs.getInt("mileage");
+                double price = rs.getDouble("price");
+                boolean sold = rs.getBoolean("sold");
 
-                Vehicle v = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price, sold);
+                Vehicle v = new Vehicle(vin, year, make, model, type, color, mileage, price, sold);
                 vehicles.add(v);
             }
-            return vehicles;
+            dealership = new Dealership(dealershipId, name, address, phone);
+            dealershipInventory.put(dealership, vehicles);
+            return dealershipId == 0 ? null : dealershipInventory;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+//    @Override
+//    public Map<Integer, List<Vehicle>> getDealershipInventoryById(int id) {
+//        Map<Integer, List<Vehicle>> dealershipInventory = new HashMap<>();
+//        List<Vehicle> vehicles = new ArrayList<>();
+//        //  -- Select all vehicles in a dealership by
+//        //  joining dealerships.inventory.VIN = vehicles.VIN
+//        String query = """
+//                SELECT dealership_id, vehicles.*
+//                FROM inventory
+//                JOIN vehicles ON inventory.VIN = vehicles.VIN
+//                WHERE dealership_id = ?;
+//                """;
+//
+//        try (Connection connection = dataSource.getConnection()) {
+//            PreparedStatement preparedStatement = connection.prepareStatement(query);
+//            preparedStatement.setInt(1, id);
+//            ResultSet rs = preparedStatement.executeQuery();
+//            int dealershipId = 0;
+//            while (rs.next()) {
+//                dealershipId = rs.getInt("dealership_id");
+//                String vin = rs.getString("VIN");
+//                int year = rs.getInt("year");
+//                String make = rs.getString("make");
+//                String model = rs.getString("model");
+//                String type = rs.getString("type");
+//                String color = rs.getString("color");
+//                int mileage = rs.getInt("mileage");
+//                double price = rs.getDouble("price");
+//                boolean sold = rs.getBoolean("sold");
+//
+//                Vehicle v = new Vehicle(vin, year, make, model, type, color, mileage, price, sold);
+//                vehicles.add(v);
+//            }
+//            dealershipInventory.put(dealershipId, vehicles);
+//            return dealershipInventory;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Override
     public void updateDealership(int id, Dealership dealership) {
@@ -201,5 +257,25 @@ public class JdbcDealershipDao implements DealershipDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean dealershipExists(int id) {
+        String query = """
+                SELECT COUNT(*) as count
+                FROM dealerships
+                WHERE dealership_id = ?
+                """;
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("count") != 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
     }
 }

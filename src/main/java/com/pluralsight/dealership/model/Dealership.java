@@ -1,21 +1,24 @@
 package com.pluralsight.dealership.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Dealership {
     private final int id;
     private String name; // Dealership name
     private String address; // Dealership address
     private String phone; // Dealership contact phone
-    //private final ArrayList<Vehicle> inventory; // List of vehicles available in the dealership's inventory
+    // TODO : THIS MAYBE will try InventoryDao class first
+    //private final Map<Integer, Integer> inventory; // List of vehicles available in the dealership's inventory
 
     public Dealership(int id, String name, String address, String phone) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;
-        //this.inventory = new ArrayList<>(); // Initialize empty inventory list
+        //this.inventory = new HashMap<>();
     }
 
     public Dealership() {
@@ -23,7 +26,7 @@ public class Dealership {
         this.name = "";
         this.address = "";
         this.phone = "";
-        //this.inventory = new ArrayList<>();
+        //this.inventory = new HashMap<>();
     }
 
     public int getId() { return id; }
@@ -50,6 +53,16 @@ public class Dealership {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public String toString() {
+        return "Dealership{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 
     //    // Filters inventory by price range and returns list of matching vehicles

@@ -5,20 +5,20 @@ public class Vehicle {
     private final int year;
     private final String make;
     private final String model;
-    private final String vehicleType;
+    private final String type;
     private final String color;
-    private final int odometer;
+    private final int mileage;
     private final double price;
     private final boolean sold;
 
-    public Vehicle(String vin, int year, String make, String model, String vehicleType, String color, int odometer, double price, boolean sold) {
+    public Vehicle(String vin, int year, String make, String model, String type, String color, int mileage, double price, boolean sold) {
         this.vin = vin;
         this.year = year;
         this.make = make;
         this.model = model;
-        this.vehicleType = vehicleType;
+        this.type = type;
         this.color = color;
-        this.odometer = odometer;
+        this.mileage = mileage;
         this.price = price;
         this.sold = sold;
     }
@@ -39,16 +39,16 @@ public class Vehicle {
         return model;
     }
 
-    public String getVehicleType() {
-        return vehicleType;
+    public String getType() {
+        return type;
     }
 
     public String getColor() {
         return color;
     }
 
-    public int getOdometer() {
-        return odometer;
+    public int getMileage() {
+        return mileage;
     }
 
     public double getPrice() {
@@ -58,12 +58,12 @@ public class Vehicle {
     @Override
     public String toString() {
         return String.format("%-21s %-10s %-10s %-10d %-10s %-10s %-10d %10.2f %10b",
-                vin, make, model, year, vehicleType, color, odometer, price, sold);
+                vin, make, model, year, type, color, mileage, price, sold);
     }
 
     //int vin, int year, String make, String model, String vehicleType, String color, int odometer, double price
     public String toCSVFormat() {
         return String.format("%s|%d|%s|%s|%s|%s|%d|%.2f",
-                vin, year, make, model, vehicleType, color, odometer, price);
+                vin, year, make, model, type, color, mileage, price);
     }
 }

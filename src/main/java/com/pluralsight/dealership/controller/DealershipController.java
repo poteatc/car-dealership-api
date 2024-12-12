@@ -3,13 +3,16 @@ package com.pluralsight.dealership.controller;
 import com.pluralsight.dealership.dao.DealershipDao;
 import com.pluralsight.dealership.dao.JdbcDealershipDao;
 import com.pluralsight.dealership.model.Dealership;
+import com.pluralsight.dealership.model.Vehicle;
 import com.pluralsight.dealership.model.entities.DealershipEntity;
 import com.pluralsight.dealership.services.DealershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/dealerships")
@@ -43,6 +46,29 @@ public class DealershipController {
     @GetMapping("/jdbc/{id}")
     public Dealership findDealershipById(@PathVariable int id) {
         return jdbcDealershipDao.findDealershipById(id);
+    }
+
+    // This method took me forever NEVER CHANGE
+    @GetMapping("/jdbc/inventory")
+    public ResponseEntity<?> findVehiclesByDealershipId(@RequestParam int dealershipId) {
+        if (!jdbcDealershipDao.dealershipExists(dealershipId)) {
+            Map<String, String> response = Map.of(
+                    "error", "Not Found",
+                    "message", "No dealership found with the provided ID: " + dealershipId
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        Map<Dealership, List<Vehicle>> inventory = jdbcDealershipDao.getDealershipInventoryById(dealershipId);
+        if (inventory == null || inventory.isEmpty()) {
+            Map<String, String> response = Map.of(
+                    "error", "No Inventory",
+                    "message", "The dealership with ID " + dealershipId + " exists, but it has no inventory."
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        return ResponseEntity.ok(inventory);
     }
 
     // Update
