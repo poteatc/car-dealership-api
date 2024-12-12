@@ -7,12 +7,16 @@ import java.util.List;
 
 public interface DealershipDao {
     // Create
-    void addDealership(Dealership dealership);
+    Dealership addDealership(Dealership dealership);
     // Read
     Dealership findDealershipById(int id);
     List<Dealership> getAllDealerships();
     // TODO : put this method in the VehicleDao instead
     List<Vehicle> findAllVehiclesByDealership(int id);
+
+    void updateDealership(int id, Dealership dealership);
+
+    void deleteDealership(int id);
 
     // Update
     //void updateDealership()

@@ -23,27 +23,74 @@ public class JdbcDealershipDao implements DealershipDao {
     }
 
     @Override
-    public void addDealership(Dealership dealership) {
+    public Dealership addDealership(Dealership dealership) {
         String query = """
-                INSERT INTO dealerships
-                VALUES (?,?,?,?)
+                INSERT INTO dealerships (name, address, phone)
+                VALUES (?,?,?)
                 """;
 
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, dealership.getId());
-            preparedStatement.setString(2, dealership.getName());
-            preparedStatement.setString(3, dealership.getAddress());
-            preparedStatement.setString(4, dealership.getPhone());
+            //preparedStatement.setInt(1, dealership.getId());
+            preparedStatement.setString(1, dealership.getName());
+            preparedStatement.setString(2, dealership.getAddress());
+            preparedStatement.setString(3, dealership.getPhone());
 
-            ResultSet rs = preparedStatement.executeQuery();
+            int rows = preparedStatement.executeUpdate();
+            System.out.println(rows + " rows updated...");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return getDealershipByName(dealership.getName());
+    }
+
+    public Dealership getDealershipByName(String dealershipName) {
+        String query = """
+                SELECT * FROM dealerships
+                WHERE name = ?
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, dealershipName);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int dealership_id = rs.getInt("dealership_id");
+                String name = rs.getString("name");
+                String address = rs.getString("address");
+                String phone = rs.getString("phone");
+
+                return new Dealership(dealership_id, name, address, phone);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     @Override
     public Dealership findDealershipById(int id) {
+        String query = """
+                SELECT *
+                FROM dealerships
+                WHERE dealership_id = ?
+                """;
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int dealership_id = rs.getInt("dealership_id");
+                String name = rs.getString("name");
+                String address = rs.getString("address");
+                String phone = rs.getString("phone");
+
+                return new Dealership(dealership_id, name, address, phone);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
@@ -103,6 +150,43 @@ public class JdbcDealershipDao implements DealershipDao {
                 vehicles.add(v);
             }
             return vehicles;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateDealership(int id, Dealership dealership) {
+        String query = """
+                UPDATE dealerships
+                SET name = ?, address = ?, phone = ?
+                WHERE dealership_id = ?
+                """;
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, dealership.getName());
+            preparedStatement.setString(2, dealership.getAddress());
+            preparedStatement.setString(3, dealership.getPhone());
+            preparedStatement.setInt(4, id);
+
+            int rows = preparedStatement.executeUpdate();
+            System.out.println(rows + " rows updated...");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteDealership(int id) {
+        String query = """
+                DELETE FROM dealerships
+                WHERE dealership_id = ?
+                """;
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            int rows = preparedStatement.executeUpdate();
+            System.out.println(rows + " rows updated...");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
