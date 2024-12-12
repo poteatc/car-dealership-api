@@ -11,11 +11,11 @@ import java.util.List;
 
 public class SalesDaoMySqlImpl implements SalesDao {
     private final DataSource dataSource;
-    private final VehicleDaoMySqlImpl vehicleDaoMySql;
+    private final JdbcVehicleDao vehicleDaoMySql;
 
     public SalesDaoMySqlImpl(DataSource dataSource) {
         this.dataSource = dataSource;
-        this.vehicleDaoMySql = new VehicleDaoMySqlImpl(dataSource);
+        this.vehicleDaoMySql = new JdbcVehicleDao(dataSource);
     }
 
     @Override

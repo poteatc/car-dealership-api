@@ -1,6 +1,8 @@
 package com.pluralsight.dealership.dao;
 
 import com.pluralsight.dealership.model.Vehicle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,10 +12,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VehicleDaoMySqlImpl implements VehicleDao {
+@Component
+public class JdbcVehicleDao implements VehicleDao {
     private final DataSource dataSource;
 
-    public VehicleDaoMySqlImpl(DataSource dataSource) {
+    @Autowired
+    public JdbcVehicleDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -36,7 +40,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
                 int year = rs.getInt("year");
                 String make = rs.getString("make");
                 String model = rs.getString("model");
-                String vehicleType = rs.getString("vehicle_type");
+                String vehicleType = rs.getString("type");
                 String color = rs.getString("color");
                 int odometer = rs.getInt("mileage");
                 double price = rs.getDouble("price");
@@ -71,7 +75,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
                 int year = rs.getInt("year");
                 String make = rs.getString("make");
                 String model = rs.getString("model");
-                String vehicleType = rs.getString("vehicle_type");
+                String vehicleType = rs.getString("type");
                 String color = rs.getString("color");
                 int odometer = rs.getInt("mileage");
                 double price = rs.getDouble("price");
@@ -106,7 +110,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
                 int year = rs.getInt("year");
                 String vmake = rs.getString("make");
                 String vmodel = rs.getString("model");
-                String vehicleType = rs.getString("vehicle_type");
+                String vehicleType = rs.getString("type");
                 String color = rs.getString("color");
                 int odometer = rs.getInt("mileage");
                 double price = rs.getDouble("price");
@@ -141,7 +145,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
                 int year = rs.getInt("year");
                 String make = rs.getString("make");
                 String model = rs.getString("model");
-                String vehicleType = rs.getString("vehicle_type");
+                String vehicleType = rs.getString("type");
                 String color = rs.getString("color");
                 int odometer = rs.getInt("mileage");
                 double price = rs.getDouble("price");
@@ -175,7 +179,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
                 int year = rs.getInt("year");
                 String make = rs.getString("make");
                 String model = rs.getString("model");
-                String vehicleType = rs.getString("vehicle_type");
+                String vehicleType = rs.getString("type");
                 String vcolor = rs.getString("color");
                 int odometer = rs.getInt("mileage");
                 double price = rs.getDouble("price");
@@ -210,7 +214,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
                 int year = rs.getInt("year");
                 String make = rs.getString("make");
                 String model = rs.getString("model");
-                String vehicleType = rs.getString("vehicle_type");
+                String vehicleType = rs.getString("type");
                 String color = rs.getString("color");
                 int odometer = rs.getInt("mileage");
                 double price = rs.getDouble("price");
@@ -244,7 +248,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
                 int year = rs.getInt("year");
                 String make = rs.getString("make");
                 String model = rs.getString("model");
-                String vehicleType = rs.getString("vehicle_type");
+                String vehicleType = rs.getString("type");
                 String color = rs.getString("color");
                 int odometer = rs.getInt("mileage");
                 double price = rs.getDouble("price");
@@ -262,7 +266,7 @@ public class VehicleDaoMySqlImpl implements VehicleDao {
     @Override
     public void addVehicle(String vin, int year, String make, String model, String vehicleType, String color, int odometer, double price, boolean sold) {
         String query = """
-            insert into vehicles (VIN, year, make, model, vehicle_type, color, mileage, price, sold)
+            insert into vehicles (VIN, year, make, model, type, color, mileage, price, sold)
             values (?,?,?,?,?,?,?,?,?)
         """;
 

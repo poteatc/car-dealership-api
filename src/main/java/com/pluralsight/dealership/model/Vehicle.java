@@ -1,5 +1,8 @@
 package com.pluralsight.dealership.model;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Vehicle {
     private final String vin;
     private final int year;
@@ -9,6 +12,7 @@ public class Vehicle {
     private final String color;
     private final int mileage;
     private final double price;
+
     private final boolean sold;
 
     public Vehicle(String vin, int year, String make, String model, String type, String color, int mileage, double price, boolean sold) {
@@ -54,6 +58,11 @@ public class Vehicle {
     public double getPrice() {
         return price;
     }
+
+    public boolean isSold() {
+        return sold;
+    }
+
 
     @Override
     public String toString() {

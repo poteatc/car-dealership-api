@@ -10,15 +10,12 @@ public class Dealership {
     private String name; // Dealership name
     private String address; // Dealership address
     private String phone; // Dealership contact phone
-    // TODO : THIS MAYBE will try InventoryDao class first
-    //private final Map<Integer, Integer> inventory; // List of vehicles available in the dealership's inventory
 
     public Dealership(int id, String name, String address, String phone) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;
-        //this.inventory = new HashMap<>();
     }
 
     public Dealership() {
@@ -26,7 +23,6 @@ public class Dealership {
         this.name = "";
         this.address = "";
         this.phone = "";
-        //this.inventory = new HashMap<>();
     }
 
     public int getId() { return id; }
