@@ -54,6 +54,7 @@ public class DealershipController {
 
     // Delete
     @DeleteMapping("/jdbc/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeDealership(@PathVariable int id) {
         jdbcDealershipDao.deleteDealership(id);
     }
@@ -89,6 +90,7 @@ public class DealershipController {
 
     // Delete
     @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteDealership(@PathVariable int id) {
         dealershipService.deleteDealership(id);
     }

@@ -28,7 +28,9 @@ public class JdbcDealershipDao implements DealershipDao {
                 INSERT INTO dealerships (name, address, phone)
                 VALUES (?,?,?)
                 """;
-
+        String getLastInsertId = """
+                SELECT last_insert_id() as ID
+                """;
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             //preparedStatement.setInt(1, dealership.getId());
@@ -38,10 +40,19 @@ public class JdbcDealershipDao implements DealershipDao {
 
             int rows = preparedStatement.executeUpdate();
             System.out.println(rows + " rows updated...");
+
+            preparedStatement = connection.prepareStatement(getLastInsertId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int newDealershipId = rs.getInt("ID");
+                return findDealershipById(newDealershipId);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return getDealershipByName(dealership.getName());
+        return null;
+        // Doesn't work if multiple dealerships have the same name
+        //return getDealershipByName(dealership.getName());
     }
 
     public Dealership getDealershipByName(String dealershipName) {
