@@ -2,7 +2,6 @@ package com.pluralsight.dealership.model;
 
 import jakarta.persistence.Entity;
 
-@Entity
 public class Vehicle {
     private final String vin;
     private final int year;

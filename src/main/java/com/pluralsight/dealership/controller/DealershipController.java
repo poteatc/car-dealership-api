@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/dealerships")
+@RequestMapping("/api/dealerships")
 public class DealershipController {
     private final DealershipService dealershipService;
     private final DealershipDao jdbcDealershipDao;
