@@ -44,13 +44,13 @@ public class DealershipController {
     }
 
     @GetMapping("/jdbc/{id}")
-    public Dealership findDealershipById(@PathVariable int id) {
+    public Dealership findDealershipById(@PathVariable Integer id) {
         return jdbcDealershipDao.findDealershipById(id);
     }
 
     // This method took me forever NEVER CHANGE
     @GetMapping("/jdbc/inventory")
-    public ResponseEntity<?> findVehiclesByDealershipId(@RequestParam int dealershipId) {
+    public ResponseEntity<?> findVehiclesByDealershipId(@RequestParam Integer dealershipId) {
         if (!jdbcDealershipDao.dealershipExists(dealershipId)) {
             Map<String, String> response = Map.of(
                     "error", "Not Found",
@@ -73,7 +73,7 @@ public class DealershipController {
 
     // Update
     @PutMapping("/jdbc/{id}")
-    public void updateDealership(@PathVariable int id,
+    public void updateDealership(@PathVariable Integer id,
                                  @RequestBody Dealership dealership) {
         jdbcDealershipDao.updateDealership(id, dealership);
     }
@@ -81,7 +81,7 @@ public class DealershipController {
     // Delete
     @DeleteMapping("/jdbc/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void removeDealership(@PathVariable int id) {
+    public void removeDealership(@PathVariable Integer id) {
         jdbcDealershipDao.deleteDealership(id);
     }
 
@@ -103,13 +103,13 @@ public class DealershipController {
     }
 
     @GetMapping("/{id}")
-    public DealershipEntity getDealershipById(@PathVariable int id) {
+    public DealershipEntity getDealershipById(@PathVariable Integer id) {
         return dealershipService.getDealershipById(id);
     }
 
     // Update
     @PutMapping("/{id}")
-    public void updateDealership(@PathVariable int id,
+    public void updateDealership(@PathVariable Integer id,
                                  @RequestBody DealershipEntity dealership) {
         dealershipService.updateDealership(id, dealership);
     }
@@ -117,7 +117,7 @@ public class DealershipController {
     // Delete
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteDealership(@PathVariable int id) {
+    public void deleteDealership(@PathVariable Integer id) {
         dealershipService.deleteDealership(id);
     }
 }
